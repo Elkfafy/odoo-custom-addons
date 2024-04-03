@@ -1,0 +1,90 @@
+<odoo>
+    <record id="operation_rental_form" model="ir.ui.view">
+        <field name="name">operation_rental_form</field>
+        <field name="model">rental.order</field>
+        <field name="arch" type='xml'>
+            <form>
+                <header>
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        nolable='1'
+                    />
+                </header>
+                <sheet>
+                    <group name="basic_information" string="Basic Information">
+                        <field name="vehicle_id" readonly="state != 'op_dep'" widget="selection"/>
+                        <field name="driver_id" readonly="state != 'op_dep'" widget="selection"/>
+                        <field name="contract_id" invisible="not contract_id" readonly="state != 'op_dep'" widget="selection"/>
+                        <!-- <field name="tags" /> -->
+                    </group>
+                    <group>
+                        <group name="driver_papers" string="Driver Papers" >
+                            <field name="driver_license_name" invisible='1' />
+                            <field name="driver_license"
+                                   widget="binary"
+                                   options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}"
+                                   filename="driver_license_name"
+                                   readonly="state != 'op_dep'"
+                            />
+                            <field name="driver_employment_name" invisible='1' />
+                            <field name="driver_employment"
+                                   widget="binary"
+                                   options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}"
+                                   filename="driver_employment_name"
+                                   readonly="state != 'op_dep'"
+                            />
+                            <field name="driver_residence_name" invisible='1' />
+                            <field name="driver_residence"
+                                   widget="binary"
+                                   options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}"
+                                   filename="driver_residence_name"
+                                   readonly="state != 'op_dep'"
+                            />
+                        </group>
+                        <group name="rental_information" string="Rental Information">
+                            <field name="rental_start" readonly="state != 'op_dep'"/>
+                            <field name="rental_end" readonly="state != 'op_dep'"/>
+                            <field name="rental_type" readonly="state != 'op_dep'"/>
+                        </group>
+                    </group>
+
+                    <group name="cost" string="Cost" invisible="state in ['op_dep', 'tr_dep']">
+                        <field name="activation_cost" readonly="state != 'op_dep'"/>
+                        <field name="recurring_cost" readonly="state != 'op_dep'"/>
+                    </group>
+                    <group name="rejection" string="Rejection" invisible="state != 'rejected'">
+                        <field name="reject_reason" readonly="state != 'op_dep'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="operation_rental_tree" model="ir.ui.view">
+        <field name="name">operation_rental_tree</field>
+        <field name="model">rental.order</field>
+        <field name="arch" type='xml'>
+            <tree create="True" edit="False">
+                <field name="vehicle_id" />
+                <field name="driver_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="operation_rental_action" model="ir.actions.act_window">
+        <field name="name">Rental Order</field>
+        <field name="res_model">rental.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="operation_rental_tree" />
+    </record>
+    <menuitem
+      id="operation_department_page_name"
+      name="Operation Department"
+      sequence="0"/>
+      <menuitem
+        id="operation_department_rental_page"
+        name="Rental Orders"
+        action="operation_rental_action"
+        parent="operation_department_page_name"
+        sequence="1"/>
+</odoo>

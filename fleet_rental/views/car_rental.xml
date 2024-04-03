@@ -1,0 +1,102 @@
+<odoo>
+    <record id='view_rental_form' model='ir.ui.view'>
+        <field name="name">rental.view.form</field>
+        <field name="model">rental.order</field>
+        <field name="arch" type='xml'>
+            <form>
+                <header>
+                    <group>
+                        <button 
+                            name="accept_order" 
+                            type="object" 
+                            class="btn-primary" 
+                            string="Accept"
+                            confirm="Do you want to continue? You can't return back!!!"
+                            invisible="state == 'in_progress' or state == 'rejected'"
+                        />
+                        <button 
+                            name="reject_order" 
+                            type="object" 
+                            class="btn-danger" 
+                            string="Reject"
+                            invisible="state in ['in_progress', 'rejected', 'op_dep']"
+                            confirm="Do you want to continue? You can't return back!!!"
+                        />
+                    </group>
+                    <field 
+                        name="state" 
+                        widget="statusbar"
+                        nolable='1' 
+                    />
+                </header>
+                <sheet>
+                    <group name="basic_information" string="Basic Information">
+                        <field name="vehicle_id" />
+                        <field name="driver_id" />
+                        <field name="contract_id" invisible="not contract_id"/>
+                        <!-- <field name="tags" /> -->
+                    </group>
+                    <group>
+                        <group name="driver_papers" string="Driver Papers">
+                            <field name="driver_license_name" invisible='1' />
+                            <field name="driver_license" widget="binary" options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}" filename="driver_license_name"/>
+                            <field name="driver_employment_name" invisible='1' />
+                            <field name="driver_employment" widget="binary" options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}" filename="driver_employment_name"/>
+                            <field name="driver_residence_name" invisible='1' />
+                            <field name="driver_residence" widget="binary" options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png'}" filename="driver_residence_name"/>
+                        </group>
+                        <group name="rental_information" string="Rental Information">
+                            <field name="rental_start" />
+                            <field name="rental_end" />
+                            <field name="rental_type" />
+                        </group>
+                    </group>
+                    <!-- <group name="car_info" string="Car Information">
+                        <field name="vehicle_id.vin_sn" />
+                        <field name="vehicle_id.odometer" />
+                    </group> -->
+
+                    <group name="cost" string="Cost" invisible="state in ['op_dep', 'tr_dep']">
+                        <field name="activation_cost"/>
+                        <field name="recurring_cost"/>
+                    </group>
+                    <group name="rejection" string="Rejection" invisible="state != 'rejected'">
+                        <field name="reject_reason"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id='view_rental_tree' model='ir.ui.view'>
+        <field name="name">rental.view.tree</field>
+        <field name="model">rental.order</field>
+        <field name="arch" type='xml'>
+            <tree create="false">
+                <field name="vehicle_id" />
+                <field name="driver_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="action_rental_view" model="ir.actions.act_window">
+        <field name="name">Rental Orders</field>
+        <field name="res_model">rental.order</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_rental_tree" />
+    </record>
+    <record id="action_rental_tree_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_rental_tree"/>
+        <field name="act_window_id" ref="action_rental_view"/>
+    </record>
+    <record id="action_rental_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_rental_form"/>
+        <field name="act_window_id" ref="action_rental_view"/>
+    </record>
+
+    <menuitem id="rental_order_menu" name="Rental Order" action="action_rental_view" parent="fleet.menu_root" sequence="1"/>
+
+</odoo>

@@ -1,0 +1,57 @@
+<odoo>
+    <record id="view_operation_order_form" model="ir.ui.view">
+        <field name="name">operation.order.view.form</field>
+        <field name="model">order</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <field 
+                name="state" 
+                widget="statusbar"
+                nolable="1"
+                options="{'clickable':1}" />
+                <!-- statusbar_visible="draft,review"/> -->
+            </header>
+            <sheet>
+              <group name="name" string="string">
+                <field name="name" />
+                <field name="driver_id" />
+                <field name="driver_license" filename="file_name"/>
+              </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+
+    <record id="view_operation_order_tree" model="ir.ui.view">
+      <field name="name">operation.order.view.tree</field>
+      <field name="model">order</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name" />
+          <field name="state" />
+          <field name="driver_id" />
+        </tree>
+      </field>
+    </record>
+    <record id="action_operation_order_view" model="ir.actions.act_window">
+      <field name="name">Orders</field>
+      <field name="res_model">order</field>
+      <field name="view_mode">tree,form</field>
+      <!-- <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="help" type="html">
+        
+      </field> -->
+    </record>
+    <menuitem
+      id="operation_root_menu"
+      name="Operation Department"
+      sequence="1"/>
+      <menuitem
+        id="operation_order_menu"
+        name="orders"
+        action="action_operation_order_view"
+        parent="operation_root_menu"
+        sequence="1"/>
+</odoo>
